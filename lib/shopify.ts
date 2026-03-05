@@ -45,6 +45,35 @@ const PRODUCTS_QUERY = `
   }
 `;
 
+const COLLECTION_QUERY = `
+  query Collection($handle: String!, $first: Int!) {
+    collection(handle: $handle) {
+      id
+      title
+      description
+      products(first: $first) {
+        edges {
+          node {
+            id
+            title
+            handle
+            description
+            featuredImage { url altText }
+            variants(first: 1) {
+              edges {
+                node {
+                  id
+                  price { amount currencyCode }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 const PRODUCT_QUERY = `
   query Product($handle: String!) {
     product(handle: $handle) {
@@ -81,6 +110,16 @@ const ADD_TO_CART_MUTATION = `
 export async function getProducts(first: number = 8) {
   const data = await shopifyFetch<any>(PRODUCTS_QUERY, { first });
   return data?.products?.edges?.map((e: any) => e.node) || [];
+}
+
+export async function getCollection(handle: string, first: number = 50) {
+  const data = await shopifyFetch<any>(COLLECTION_QUERY, { handle, first });
+  const collection = data?.collection;
+  if (!collection) return null;
+  return {
+    ...collection,
+    products: collection?.products?.edges?.map((e: any) => e.node) || [],
+  };
 }
 
 export async function getProduct(handle: string) {
