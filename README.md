@@ -89,7 +89,23 @@ livra-lingerie/
 
 ## 🔧 核心功能说明
 
-### 1. 购物车系统（纯前端）
+### 1. Shopify API 集成（已完成）
+
+项目已接入 Shopify Storefront API，商品数据实时获取。
+
+**文件位置：**
+- `lib/shopify.ts` - Shopify API 封装
+
+**主要函数：**
+```typescript
+getProducts(first)      // 获取产品列表
+getProduct(handle)      // 获取单个产品
+getCollection(handle)   // 获取分类及产品
+createCart()            // 创建购物车
+addToCart(cartId, variantId, quantity)  // 添加到购物车
+```
+
+### 2. 购物车系统（纯前端）
 
 购物车数据存储在浏览器的 `localStorage` 中，刷新页面不会丢失。
 
@@ -115,39 +131,14 @@ interface CartItem {
 }
 ```
 
-### 2. 产品数据（静态 Mock）
+### 3. 产品数据
 
-当前使用静态数据，位于各页面的 `mockProducts` 变量中。
+当前使用 Shopify Storefront API 获取真实商品数据。
 
-**添加新产品：**
-1. 打开 `app/products/[handle]/page.tsx`
-2. 在 `mockProducts` 对象中添加新产品
-3. 在 `app/collection/[handle]/page.tsx` 的 `mockProducts` 数组中同步添加
-
-**示例：**
-```typescript
-'new-product-handle': {
-  id: '5',
-  title: 'New Product Name',
-  handle: 'new-product-handle',
-  description: 'Product description...',
-  featuredImage: { url: 'https://...', altText: '...' },
-  images: { edges: [...] },
-  variants: { edges: [...] },
-  options: [...]
-}
-```
-
-### 3. Shopify API 连接（需要升级计划）
-
-当 Shopify 升级到支持 Headless 的计划后：
-
-1. 获取 Storefront API Token
-2. 更新 `.env.local`：
-   ```
-   NEXT_PUBLIC_STOREFRONT_API_TOKEN=your_token_here
-   ```
-3. 修改页面使用 `lib/shopify.ts` 中的函数获取数据
+**商品分类：**
+- Women: 8 款女款内衣
+- Men: 2 款男款内裤
+- Featured: 精选推荐
 
 ---
 
@@ -182,8 +173,8 @@ interface CartItem {
 
 ```env
 # Shopify 配置
-NEXT_PUBLIC_STORE_DOMAIN=your-store.myshopify.com
-NEXT_PUBLIC_STOREFRONT_API_TOKEN=your_token_here
+NEXT_PUBLIC_STORE_DOMAIN=dhppw0-di.myshopify.com
+NEXT_PUBLIC_STOREFRONT_API_TOKEN=717843dbb34476fe0d3370e1b532ef88
 
 # 品牌信息
 NEXT_PUBLIC_STORE_NAME=Livra
@@ -192,15 +183,24 @@ NEXT_PUBLIC_STORE_DESCRIPTION=Elegant Lingerie for the Modern Woman
 
 ---
 
+## 🔗 相关链接
+
+| 项目 | 链接 |
+|------|------|
+| **网站** | https://wearlivra.com |
+| **GitHub** | https://github.com/Luoshifenw/QC-store |
+| **Shopify 后台** | https://admin.shopify.com/store/dhppw0-di |
+
+---
+
 ## 📱 页面路由
 
 | 路径 | 页面 | 说明 |
 |------|------|------|
 | `/` | 首页 | Hero + 产品展示 + 品牌故事 |
-| `/collection/all` | 全部产品 | 所有商品列表 |
-| `/collection/bras` | 文胸分类 | 筛选 bras 类商品 |
-| `/collection/panties` | 内裤分类 | 筛选 panties 类商品 |
-| `/collection/sets` | 套装分类 | 筛选 sets 类商品 |
+| `/collection/women` | Women 分类 | 女款产品列表 |
+| `/collection/men` | Men 分类 | 男款产品列表 |
+| `/collection/featured` | Featured 分类 | 精选产品列表 |
 | `/products/[handle]` | 产品详情 | 单个产品详情页 |
 | `/cart` | 购物车 | 购物车页面 |
 | `/pages/shipping` | 配送说明 | Shipping & Returns |
@@ -248,17 +248,30 @@ npm start
 ## 📝 开发日志
 
 ### 2026-03-05
-- ✅ Shopify 后台欧美市场配置完成
+- ✅ **Shopify 后台欧美市场配置完成**
   - Markets: 北美市场（美国+加拿大）、欧盟市场（27国）
   - 语言: English 设为默认
   - 单位: Imperial system（英制）
   - 时区: Pacific Time (US & Canada)
   - 货币: 启用 USD/CAD/EUR 本地货币
-- ✅ 飞书机器人配置完成
+  - 商店名称: Livra
+  - 域名: wearlivra.com 已连接
+- ✅ **商品管理**
+  - 上架 10 个产品
+  - 创建 Collections: Women（8款）、Men（2款）、Featured
+  - 商品分类导航更新: Women / Men / Featured
+- ✅ **前端开发**
+  - Collection 页面接入真实 Shopify API
+  - 产品详情页接入真实 Shopify API
+  - 品牌素材替换完成（Hero、分类封面、About、Logo、Favicon）
+- ✅ **飞书机器人配置完成**
   - OpenClaw 飞书插件启用
   - WebSocket 长连接模式（无需公网暴露）
   - 用户配对授权完成
   - 可通过飞书与 AI 助手交互
+- ✅ **部署**
+  - Vercel 自动部署已配置
+  - 域名 wearlivra.com 已指向 Vercel
 
 ### 2026-03-01
 - ✅ 创建 Next.js 项目
@@ -310,83 +323,18 @@ npm start
 
 ## 🔧 待优化项目
 
-### 高优先级
-- [ ] SEO 元数据（各页面独立 title/description）
-- [ ] 图片懒加载优化
-- [ ] 排序功能实现
+### 🔴 高优先级
+- [ ] 支付配置 - Shopify Payments
+- [ ] 物流配置 - 欧美运费模板
+- [ ] 税费设置 - 欧盟 IOSS、加拿大 GST
 
-### 中优先级
-- [ ] 搜索功能
-- [ ] 加载状态动画
-- [ ] 错误边界组件
+### 🟡 中优先级
+- [ ] 政策页面 - Privacy Policy、Terms、Refund Policy
+- [ ] SEO 元数据 - 各页面独立 title/description
+- [ ] 搜索功能 - 接入 Shopify API
 
-### 低优先级
+### 🟢 低优先级
 - [ ] PWA 支持
+- [ ] 国际化 - 多语言支持
 - [ ] 骨架屏加载
-- [ ] 国际化
-
-
----
-
-## 📅 2026-03-01 更新
-
-### 已完成
-- ✅ 购物车功能（显示颜色/尺寸）
-- ✅ 移动端适配
-- ✅ 项目文档
-
-### 待处理
-- ⏳ Shopify 连接（需要升级计划）
-- ⏳ SEO 优化（上线后再做）
-- ⏳ 真实商品数据
-
-
----
-
-## 📅 2026-03-01 更新 (2)
-
-### 新增功能
-- ✅ 产品排序功能（Featured / Price / Newest）
-- ✅ 搜索功能（点击导航栏搜索图标）
-- ✅ 页面加载进度条动画
-
-### 组件更新
-| 文件 | 说明 |
-|------|------|
-| `components/SearchModal.tsx` | 搜索弹窗组件 |
-| `components/Loading.tsx` | 加载动画组件 |
-| `components/Header.tsx` | 集成搜索按钮 |
-
-
----
-
-## 📅 2026-03-01 更新
-
-### 新增功能
-- ✅ 产品排序功能（Featured / Price Low-High / Price High-Low / Newest）
-- ✅ 搜索功能（点击导航栏搜索图标，支持 ESC 关闭）
-- ✅ 页面加载进度条动画
-
-### 新增组件
-| 文件 | 说明 |
-|------|------|
-| `components/SearchModal.tsx` | 搜索弹窗组件 |
-| `components/Loading.tsx` | 加载动画组件（LoadingBar、ProductSkeleton） |
-
-### 功能使用说明
-
-#### 排序功能
-1. 进入产品列表页 `/collection/all`
-2. 点击 "Sort by" 下拉框
-3. 选择排序方式，产品自动重新排列
-
-#### 搜索功能
-1. 点击导航栏右上角搜索图标 🔍
-2. 输入产品名称（如 "silk"、"bra"）
-3. 点击搜索结果跳转到产品详情页
-4. 按 ESC 或点击 X 关闭搜索
-
-#### 加载动画
-- 页面切换时，顶部会显示黑色进度条
-- 自动消失，无需手动操作
 
