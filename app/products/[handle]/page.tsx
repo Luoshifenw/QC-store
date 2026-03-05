@@ -1,107 +1,71 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { AddToCartButton } from '@/components/AddToCartButton';
-import { formatPrice } from '@/lib/cart';
+import { getProduct, formatPrice } from '@/lib/shopify';
+import { useCart } from '@/lib/CartContext';
 
-// Mock product data
-const mockProducts: Record<string, any> = {
-  'silk-lace-bralette': {
-    id: '1',
-    title: 'Silk Lace Bralette',
-    handle: 'silk-lace-bralette',
-    description: 'Luxurious silk blend bralette with delicate lace details. Perfect for everyday elegance. Made from 82% Silk and 18% Elastane for a comfortable, breathable fit.',
-    featuredImage: { url: 'https://images.unsplash.com/photo-1617331721458-bd3bd3f9c7f8?w=800&q=80', altText: 'Silk Lace Bralette' },
-    images: {
-      edges: [
-        { node: { url: 'https://images.unsplash.com/photo-1617331721458-bd3bd3f9c7f8?w=800&q=80', altText: 'Silk Lace Bralette' } },
-        { node: { url: 'https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=800&q=80', altText: 'Detail view' } },
-        { node: { url: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80', altText: 'On model' } },
-      ]
-    },
-    variants: {
-      edges: [
-        { node: { id: 'v1', title: 'Beige / S', availableForSale: true, price: { amount: 68, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Beige' }, { name: 'Size', value: 'S' }] } },
-        { node: { id: 'v2', title: 'Beige / M', availableForSale: true, price: { amount: 68, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Beige' }, { name: 'Size', value: 'M' }] } },
-        { node: { id: 'v3', title: 'Beige / L', availableForSale: true, price: { amount: 68, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Beige' }, { name: 'Size', value: 'L' }] } },
-        { node: { id: 'v4', title: 'Black / S', availableForSale: true, price: { amount: 68, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'S' }] } },
-        { node: { id: 'v5', title: 'Black / M', availableForSale: false, price: { amount: 68, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'M' }] } },
-        { node: { id: 'v6', title: 'Black / L', availableForSale: true, price: { amount: 68, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'L' }] } },
-      ]
-    },
-    options: [
-      { id: 'opt1', name: 'Color', values: ['Beige', 'Black'] },
-      { id: 'opt2', name: 'Size', values: ['S', 'M', 'L'] },
-    ]
-  },
-  'cotton-comfort-bra': {
-    id: '2',
-    title: 'Cotton Comfort Bra',
-    handle: 'cotton-comfort-bra',
-    description: 'Soft cotton bra for everyday comfort. Seamless design for a smooth look under any outfit.',
-    featuredImage: { url: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80', altText: 'Cotton Comfort Bra' },
-    images: { edges: [{ node: { url: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&q=80', altText: 'Cotton Comfort Bra' } }] },
-    variants: { edges: [
-      { node: { id: 'v7', title: 'White / S', availableForSale: true, price: { amount: 52, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'White' }, { name: 'Size', value: 'S' }] } },
-      { node: { id: 'v8', title: 'White / M', availableForSale: true, price: { amount: 52, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'White' }, { name: 'Size', value: 'M' }] } },
-      { node: { id: 'v9', title: 'White / L', availableForSale: true, price: { amount: 52, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'White' }, { name: 'Size', value: 'L' }] } },
-    ] },
-    options: [
-      { id: 'opt3', name: 'Color', values: ['White'] },
-      { id: 'opt4', name: 'Size', values: ['S', 'M', 'L'] },
-    ]
-  },
-  'lace-brief-set': {
-    id: '3',
-    title: 'Lace Brief Set',
-    handle: 'lace-brief-set',
-    description: 'Elegant matching lace brief set. Perfect for special occasions or everyday luxury.',
-    featuredImage: { url: 'https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=800&q=80', altText: 'Lace Brief Set' },
-    images: { edges: [{ node: { url: 'https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=800&q=80', altText: 'Lace Brief Set' } }] },
-    variants: { edges: [{ node: { id: 'v10', title: 'One Size', availableForSale: true, price: { amount: 89, currencyCode: 'USD' }, selectedOptions: [] } }] },
-    options: []
-  },
-  'wireless-tshirt-bra': {
-    id: '4',
-    title: 'Wireless T-Shirt Bra',
-    handle: 'wireless-tshirt-bra',
-    description: 'Comfortable wireless t-shirt bra with smooth cups. Invisible under clothing.',
-    featuredImage: { url: 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?w=800&q=80', altText: 'Wireless T-Shirt Bra' },
-    images: { edges: [{ node: { url: 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?w=800&q=80', altText: 'Wireless T-Shirt Bra' } }] },
-    variants: { edges: [
-      { node: { id: 'v11', title: 'Nude / S', availableForSale: true, price: { amount: 58, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Nude' }, { name: 'Size', value: 'S' }] } },
-      { node: { id: 'v12', title: 'Nude / M', availableForSale: true, price: { amount: 58, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Nude' }, { name: 'Size', value: 'M' }] } },
-      { node: { id: 'v13', title: 'Nude / L', availableForSale: true, price: { amount: 58, currencyCode: 'USD' }, selectedOptions: [{ name: 'Color', value: 'Nude' }, { name: 'Size', value: 'L' }] } },
-    ] },
-    options: [
-      { id: 'opt5', name: 'Color', values: ['Nude'] },
-      { id: 'opt6', name: 'Size', values: ['S', 'M', 'L'] },
-    ]
-  },
+type Product = {
+  id: string;
+  title: string;
+  handle: string;
+  description?: string;
+  descriptionHtml?: string;
+  featuredImage?: { url: string; altText?: string };
+  images?: { edges: { node: { url: string; altText?: string } }[] };
+  variants?: { 
+    edges: { 
+      node: { 
+        id: string; 
+        title: string; 
+        availableForSale: boolean; 
+        price: { amount: number; currencyCode: string }; 
+        selectedOptions: { name: string; value: string }[] 
+      } 
+    }[] 
+  };
+  options?: { id: string; name: string; values: string[] }[];
 };
 
 export default function ProductPage() {
   const params = useParams();
   const handle = params.handle as string;
-  const product = mockProducts[handle] || mockProducts['silk-lace-bralette'];
+  const { addItem } = useCart();
   
-  const images = product.images?.edges?.map((e: any) => e.node) || [product.featuredImage];
-  const variants = product.variants?.edges?.map((e: any) => e.node) || [];
-  const defaultPrice = variants[0]?.price;
-  
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [addingToCart, setAddingToCart] = useState(false);
+
+  useEffect(() => {
+    async function fetchProduct() {
+      setLoading(true);
+      try {
+        const data = await getProduct(handle);
+        setProduct(data);
+      } catch (error) {
+        console.error('Failed to fetch product:', error);
+        setProduct(null);
+      }
+      setLoading(false);
+    }
+    fetchProduct();
+  }, [handle]);
+
+  const images = product?.images?.edges?.map((e) => e.node) || (product?.featuredImage ? [product.featuredImage] : []);
+  const variants = product?.variants?.edges?.map((e) => e.node) || [];
+  const defaultPrice = variants[0]?.price;
 
   // 根据选择的选项找到对应的 variant
   const selectedVariant = useMemo(() => {
     if (variants.length === 0) return null;
-    if (Object.keys(selectedOptions).length === 0) return variants[0];
+    if (Object.keys(selectedOptions).length === 0) return variants.find(v => v.availableForSale) || variants[0];
     
-    return variants.find((v: any) => 
-      v.selectedOptions.every((opt: any) => selectedOptions[opt.name] === opt.value)
+    return variants.find((v) => 
+      v.selectedOptions.every((opt) => selectedOptions[opt.name] === opt.value)
     ) || variants[0];
   }, [selectedOptions, variants]);
 
@@ -111,11 +75,51 @@ export default function ProductPage() {
 
   // 检查某个选项值是否有货
   const isOptionAvailable = (optionName: string, value: string) => {
-    return variants.some((v: any) => {
-      const matchOption = v.selectedOptions.find((opt: any) => opt.name === optionName);
+    return variants.some((v) => {
+      const matchOption = v.selectedOptions.find((opt) => opt.name === optionName);
       return matchOption?.value === value && v.availableForSale;
     });
   };
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant || !product) return;
+    setAddingToCart(true);
+    
+    addItem({
+      id: selectedVariant.id,
+      productId: product.id,
+      title: product.title,
+      variantTitle: selectedVariant.title,
+      price: selectedVariant.price.amount,
+      image: product.featuredImage?.url,
+      quantity: 1,
+    });
+    
+    setTimeout(() => setAddingToCart(false), 500);
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center py-20">
+          <p className="text-neutral-500">Loading product...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center py-20">
+          <p className="text-neutral-500">Product not found.</p>
+          <Link href="/collection/all" className="mt-4 inline-block text-neutral-900 underline">
+            Continue Shopping
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -141,7 +145,7 @@ export default function ProductPage() {
           </div>
           {images.length > 1 && (
             <div className="grid grid-cols-4 gap-4">
-              {images.map((img: any, idx: number) => (
+              {images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImageIndex(idx)}
@@ -173,48 +177,51 @@ export default function ProductPage() {
           </div>
 
           {/* 选项选择 */}
-          {product.options?.map((option: any) => (
-            <div key={option.id} className="mt-8">
-              <label className="block text-sm font-medium text-neutral-900 mb-3">
-                {option.name}: <span className="font-normal text-neutral-600">{selectedOptions[option.name] || 'Select'}</span>
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {option.values.map((value: string) => {
-                  const isSelected = selectedOptions[option.name] === value;
-                  const available = isOptionAvailable(option.name, value);
-                  return (
-                    <button
-                      key={value}
-                      onClick={() => handleOptionChange(option.name, value)}
-                      disabled={!available}
-                      className={`px-4 py-2 border text-sm transition ${
-                        isSelected 
-                          ? 'border-neutral-900 bg-neutral-900 text-white' 
-                          : available
-                            ? 'border-neutral-200 hover:border-neutral-900'
-                            : 'border-neutral-100 text-neutral-300 cursor-not-allowed line-through'
-                      }`}
-                    >
-                      {value}
-                    </button>
-                  );
-                })}
+          {product.options?.map((option) => (
+            option.name !== 'Title' && (
+              <div key={option.id} className="mt-8">
+                <label className="block text-sm font-medium text-neutral-900 mb-3">
+                  {option.name}: <span className="font-normal text-neutral-600">{selectedOptions[option.name] || 'Select'}</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {option.values.map((value) => {
+                    const isSelected = selectedOptions[option.name] === value;
+                    const available = isOptionAvailable(option.name, value);
+                    return (
+                      <button
+                        key={value}
+                        onClick={() => handleOptionChange(option.name, value)}
+                        disabled={!available}
+                        className={`px-4 py-2 border text-sm transition ${
+                          isSelected 
+                            ? 'border-neutral-900 bg-neutral-900 text-white' 
+                            : available
+                              ? 'border-neutral-200 hover:border-neutral-900'
+                              : 'border-neutral-100 text-neutral-300 cursor-not-allowed line-through'
+                        }`}
+                      >
+                        {value}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )
           ))}
 
           {/* 加购按钮 */}
           <div className="mt-8">
-            <AddToCartButton 
-              product={{
-                id: product.id,
-                title: product.title,
-                handle: product.handle,
-                featuredImage: product.featuredImage,
-                variants: product.variants,
-              }}
-              selectedVariant={selectedVariant}
-            />
+            <button
+              onClick={handleAddToCart}
+              disabled={!selectedVariant?.availableForSale || addingToCart}
+              className={`w-full py-4 text-sm tracking-wide transition ${
+                selectedVariant?.availableForSale
+                  ? 'bg-neutral-900 text-white hover:bg-neutral-800'
+                  : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
+              }`}
+            >
+              {addingToCart ? 'Adding...' : selectedVariant?.availableForSale ? 'ADD TO CART' : 'SOLD OUT'}
+            </button>
           </div>
 
           {/* 附加信息 */}
