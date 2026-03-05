@@ -1,4 +1,4 @@
-# AURA Lingerie - 跨境电商独立站
+# Livra Lingerie - 跨境电商独立站
 
 > 欧美女装内衣品牌独立站，基于 Next.js + Shopify Storefront API 构建
 ***重要：你必须在开发过程中维护这个文档，记录开发现状和开发指导，让小白也能按照这个文档的指导上手开发***
@@ -7,7 +7,7 @@
 
 | 项目 | 说明 |
 |------|------|
-| **品牌名称** | AURA |
+| **品牌名称** | Livra |
 | **目标市场** | 欧美女性 |
 | **产品类型** | 内衣裤 |
 | **技术栈** | Next.js 14 + TypeScript + Tailwind CSS |
@@ -26,7 +26,7 @@
 
 ```bash
 # 进入项目目录
-cd /Users/wusu/Desktop/MyProjects/IndependentSite_UnderWear_v0.0.2/aura-lingerie
+cd /Users/wusu/Desktop/MyProjects/IndependentSite_UnderWear_v0.0.2/livra-lingerie
 
 # 安装依赖
 npm install
@@ -49,7 +49,7 @@ npm start
 ## 📁 项目结构
 
 ```
-aura-lingerie/
+livra-lingerie/
 ├── app/                          # Next.js App Router 页面
 │   ├── layout.tsx               # 全局布局（Header + Footer）
 │   ├── page.tsx                 # 首页
@@ -186,7 +186,7 @@ NEXT_PUBLIC_STORE_DOMAIN=your-store.myshopify.com
 NEXT_PUBLIC_STOREFRONT_API_TOKEN=your_token_here
 
 # 品牌信息
-NEXT_PUBLIC_STORE_NAME=AURA
+NEXT_PUBLIC_STORE_NAME=Livra
 NEXT_PUBLIC_STORE_DESCRIPTION=Elegant Lingerie for the Modern Woman
 ```
 
@@ -247,6 +247,19 @@ npm start
 
 ## 📝 开发日志
 
+### 2026-03-05
+- ✅ Shopify 后台欧美市场配置完成
+  - Markets: 北美市场（美国+加拿大）、欧盟市场（27国）
+  - 语言: English 设为默认
+  - 单位: Imperial system（英制）
+  - 时区: Pacific Time (US & Canada)
+  - 货币: 启用 USD/CAD/EUR 本地货币
+- ✅ 飞书机器人配置完成
+  - OpenClaw 飞书插件启用
+  - WebSocket 长连接模式（无需公网暴露）
+  - 用户配对授权完成
+  - 可通过飞书与 AI 助手交互
+
 ### 2026-03-01
 - ✅ 创建 Next.js 项目
 - ✅ 完成首页、产品列表、产品详情页
@@ -261,7 +274,7 @@ npm start
 ## 📞 联系方式
 
 - 开发者：OpenClaw AI Assistant
-- 项目位置：`/Users/wusu/Desktop/MyProjects/IndependentSite_UnderWear_v0.0.2/aura-lingerie`
+- 项目位置：`/Users/wusu/Desktop/MyProjects/IndependentSite_UnderWear_v0.0.2/livra-lingerie`
 
 ---
 

@@ -8,7 +8,7 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <Link href="/" className="text-2xl font-light tracking-[0.3em] text-neutral-900">
-              AURA
+              LIVRA
             </Link>
             <p className="mt-4 text-sm text-neutral-500 leading-relaxed">
               Elegant lingerie crafted for the modern woman. Comfort meets sophistication.
@@ -57,7 +57,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-neutral-200 flex flex-col md:flex-row justify-between items-center">
           <p className="text-xs text-neutral-400">
-            © 2026 AURA. All rights reserved.
+            © 2026 LIVRA. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-neutral-400 hover:text-neutral-600 transition">

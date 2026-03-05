@@ -9,7 +9,7 @@ export function AboutSection() {
           <div className="relative aspect-square overflow-hidden">
             <img
               src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
-              alt="About AURA"
+              alt="About LIVRA"
               className="w-full h-full object-cover"
             />
           </div>
@@ -21,7 +21,7 @@ export function AboutSection() {
               <span className="block italic text-neutral-400">Intention</span>
             </h2>
             <p className="mt-6 text-neutral-600 leading-relaxed">
-              At AURA, we believe that beautiful lingerie should be an everyday luxury. 
+              At LIVRA, we believe that beautiful lingerie should be an everyday luxury. 
               Each piece is thoughtfully designed to celebrate your body, combining premium 
               materials with timeless elegance.
             </p>

@@ -17,7 +17,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'AURA | Elegant Lingerie',
+  title: 'LIVRA | Elegant Lingerie',
   description: 'Premium lingerie for the modern woman.',
 };
 

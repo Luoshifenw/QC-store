@@ -17,7 +17,7 @@ export function Header() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="text-2xl font-light tracking-[0.3em] text-neutral-900">
-              AURA
+              LIVRA
             </Link>
 
             {/* Desktop Navigation */}
