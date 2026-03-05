@@ -87,12 +87,13 @@ export default function ProductPage() {
     
     addToCart({
       id: selectedVariant.id,
-      productId: product.id,
+      variantId: selectedVariant.id,
       title: product.title,
+      handle: product.handle,
       variantTitle: selectedVariant.title,
       price: selectedVariant.price.amount,
-      image: product.featuredImage?.url,
-      quantity: 1,
+      currencyCode: selectedVariant.price.currencyCode,
+      image: product.featuredImage?.url || '',
     });
     
     setTimeout(() => setAddingToCart(false), 500);
