@@ -32,7 +32,7 @@ type Product = {
 export default function ProductPage() {
   const params = useParams();
   const handle = params.handle as string;
-  const { addItem } = useCart();
+  const { addToCart } = useCart();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -85,7 +85,7 @@ export default function ProductPage() {
     if (!selectedVariant || !product) return;
     setAddingToCart(true);
     
-    addItem({
+    addToCart({
       id: selectedVariant.id,
       productId: product.id,
       title: product.title,
