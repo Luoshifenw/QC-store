@@ -1,6 +1,6 @@
 // Shopify Storefront API Client
-const STORE_DOMAIN = process.env.NEXT_PUBLIC_STORE_DOMAIN || 'b6amwg-ri.myshopify.com';
-const STOREFRONT_API_TOKEN = process.env.NEXT_PUBLIC_STOREFRONT_API_TOKEN || '';
+const STORE_DOMAIN = process.env.NEXT_PUBLIC_STORE_DOMAIN || 'dhppw0-di.myshopify.com';
+const STOREFRONT_API_TOKEN = process.env.NEXT_PUBLIC_STOREFRONT_API_TOKEN || '717843dbb34476fe0d3370e1b532ef88';
 const API_VERSION = '2024-01';
 
 async function shopifyFetch<T>(query: string, variables: Record<string, any> = {}): Promise<T> {
