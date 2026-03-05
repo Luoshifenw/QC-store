@@ -25,17 +25,14 @@ export function Header() {
               <Link href="/" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900 transition">
                 Home
               </Link>
-              <Link href="/collection/all" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900 transition">
-                Shop All
+              <Link href="/collection/women" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900 transition">
+                Women
               </Link>
-              <Link href="/collection/bras" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900 transition">
-                Bras
+              <Link href="/collection/men" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900 transition">
+                Men
               </Link>
-              <Link href="/collection/panties" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900 transition">
-                Panties
-              </Link>
-              <Link href="/collection/sets" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900 transition">
-                Sets
+              <Link href="/collection/featured" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900 transition">
+                Featured
               </Link>
             </nav>
 
@@ -84,10 +81,9 @@ export function Header() {
             <div className="md:hidden py-4 border-t border-neutral-100">
               <nav className="flex flex-col space-y-4">
                 <Link href="/" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900">Home</Link>
-                <Link href="/collection/all" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900">Shop All</Link>
-                <Link href="/collection/bras" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900">Bras</Link>
-                <Link href="/collection/panties" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900">Panties</Link>
-                <Link href="/collection/sets" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900">Sets</Link>
+                <Link href="/collection/women" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900">Women</Link>
+                <Link href="/collection/men" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900">Men</Link>
+                <Link href="/collection/featured" className="text-sm tracking-wide text-neutral-600 hover:text-neutral-900">Featured</Link>
               </nav>
             </div>
           )}

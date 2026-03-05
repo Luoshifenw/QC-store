@@ -20,9 +20,9 @@ export function Footer() {
             <h4 className="text-sm font-medium text-neutral-900 mb-4">Shop</h4>
             <ul className="space-y-3">
               <li><Link href="/collection/all" className="text-sm text-neutral-500 hover:text-neutral-900 transition">All Products</Link></li>
-              <li><Link href="/collection/bras" className="text-sm text-neutral-500 hover:text-neutral-900 transition">Bras</Link></li>
-              <li><Link href="/collection/panties" className="text-sm text-neutral-500 hover:text-neutral-900 transition">Panties</Link></li>
-              <li><Link href="/collection/sets" className="text-sm text-neutral-500 hover:text-neutral-900 transition">Sets</Link></li>
+              <li><Link href="/collection/women" className="text-sm text-neutral-500 hover:text-neutral-900 transition">Women</Link></li>
+              <li><Link href="/collection/men" className="text-sm text-neutral-500 hover:text-neutral-900 transition">Men</Link></li>
+              <li><Link href="/collection/featured" className="text-sm text-neutral-500 hover:text-neutral-900 transition">Featured</Link></li>
             </ul>
           </div>
 
