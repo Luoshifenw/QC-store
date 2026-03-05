@@ -8,7 +8,7 @@ export function FeaturedSection() {
           {/* Left Image - Women */}
           <Link href="/collection/women" className="group relative aspect-[4/5] overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1617331721458-bd3bd3f9c7f8?w=800&q=80"
+              src="/images/category_women.png"
               alt="Women Collection"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
@@ -22,7 +22,7 @@ export function FeaturedSection() {
           {/* Right Image - Men */}
           <Link href="/collection/men" className="group relative aspect-[4/5] overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=800&q=80"
+              src="/images/category_men.png"
               alt="Men Collection"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />

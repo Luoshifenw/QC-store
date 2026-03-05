@@ -7,7 +7,7 @@ export function Hero() {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=1920&q=80')`,
+          backgroundImage: `url('/images/hero_banner.png')`,
         }}
       >
         <div className="absolute inset-0 bg-black/40 md:bg-gradient-to-r md:from-black/40 md:via-black/20 md:to-transparent" />
@@ -25,16 +25,16 @@ export function Hero() {
           </p>
           <div className="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
             <Link 
-              href="/collection/all"
+              href="/collection/women"
               className="px-6 sm:px-8 py-3 bg-white text-neutral-900 text-sm tracking-wide hover:bg-neutral-100 transition text-center"
             >
               SHOP NOW
             </Link>
             <Link 
-              href="/collection/new"
+              href="/collection/featured"
               className="px-6 sm:px-8 py-3 border border-white text-white text-sm tracking-wide hover:bg-white/10 transition text-center"
             >
-              NEW ARRIVALS
+              FEATURED
             </Link>
           </div>
         </div>

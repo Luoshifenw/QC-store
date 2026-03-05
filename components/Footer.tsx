@@ -7,8 +7,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link href="/" className="text-2xl font-light tracking-[0.3em] text-neutral-900">
-              LIVRA
+            <Link href="/" className="inline-block">
+              <img src="/images/logo_primary.png" alt="LIVRA" className="h-10 w-auto" />
             </Link>
             <p className="mt-4 text-sm text-neutral-500 leading-relaxed">
               Elegant lingerie crafted for the modern woman. Comfort meets sophistication.

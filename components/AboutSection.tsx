@@ -8,7 +8,7 @@ export function AboutSection() {
           {/* Image */}
           <div className="relative aspect-square overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+              src="/images/about_fabric.png"
               alt="About LIVRA"
               className="w-full h-full object-cover"
             />

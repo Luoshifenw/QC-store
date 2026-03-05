@@ -18,7 +18,16 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: 'LIVRA | Elegant Lingerie',
-  description: 'Premium lingerie for the modern woman.',
+  description: 'Premium lingerie for the modern woman. Comfort meets sophistication.',
+  icons: {
+    icon: '/images/logo_favicon.png',
+    apple: '/images/logo_favicon.png',
+  },
+  openGraph: {
+    title: 'LIVRA | Elegant Lingerie',
+    description: 'Premium lingerie for the modern woman. Comfort meets sophistication.',
+    images: ['/images/hero_banner.png'],
+  },
 };
 
 export default function RootLayout({
