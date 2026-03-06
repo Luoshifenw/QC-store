@@ -2,14 +2,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { formatPrice } from '@/lib/shopify';
 
+export interface ProductCardProduct {
+  id: string;
+  title: string;
+  handle: string;
+  featuredImage?: { url: string; altText?: string };
+  variants?: { edges: { node: { price: { amount: number; currencyCode: string } } }[] };
+}
+
 interface ProductCardProps {
-  product: {
-    id: string;
-    title: string;
-    handle: string;
-    featuredImage?: { url: string; altText: string | null };
-    variants: { edges: { node: { price: { amount: number; currencyCode: string } } }[] };
-  };
+  product: ProductCardProduct;
 }
 
 export function ProductCard({ product }: ProductCardProps) {

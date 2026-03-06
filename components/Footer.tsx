@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function Footer() {
   return (
@@ -8,7 +9,7 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <Link href="/" className="inline-block">
-              <img src="/images/logo_primary.png" alt="LIVRA" className="h-10 w-auto" />
+              <Image src="/images/logo_primary.png" alt="LIVRA" width={160} height={40} className="h-10 w-auto" />
             </Link>
             <p className="mt-4 text-sm text-neutral-500 leading-relaxed">
               Elegant lingerie crafted for the modern woman. Comfort meets sophistication.

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { useCart } from '@/lib/CartContext';
 import { SearchModal } from './SearchModal';
@@ -17,7 +18,7 @@ export function Header() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="text-2xl font-light tracking-[0.3em] text-neutral-900">
-              <img src="/images/logo_primary.png" alt="LIVRA" className="h-8 w-auto" />
+              <Image src="/images/logo_primary.png" alt="LIVRA" width={128} height={32} className="h-8 w-auto" />
             </Link>
 
             {/* Desktop Navigation */}

@@ -10,7 +10,7 @@
 | **品牌名称** | Livra |
 | **目标市场** | 欧美女性 |
 | **产品类型** | 内衣裤 |
-| **技术栈** | Next.js 14 + TypeScript + Tailwind CSS |
+| **技术栈** | Next.js 16 + TypeScript + Tailwind CSS |
 | **后端** | Shopify (Headless 模式) |
 
 ---
@@ -156,8 +156,7 @@ interface CartItem {
 
 ### 字体
 
-- 主字体：Inter（无衬线）
-- 装饰字体：Playfair Display（衬线，用于品牌感）
+- 当前使用系统字体栈（无额外远程字体依赖）
 
 ### 间距规范
 
@@ -174,7 +173,7 @@ interface CartItem {
 ```env
 # Shopify 配置
 NEXT_PUBLIC_STORE_DOMAIN=dhppw0-di.myshopify.com
-NEXT_PUBLIC_STOREFRONT_API_TOKEN=717843dbb34476fe0d3370e1b532ef88
+NEXT_PUBLIC_STOREFRONT_API_TOKEN=your_storefront_api_token
 
 # 品牌信息
 NEXT_PUBLIC_STORE_NAME=Livra
@@ -246,6 +245,18 @@ npm start
 ---
 
 ## 📝 开发日志
+
+### 2026-03-06
+- ✅ **代码质量与安全修复**
+  - 修复 ESLint 全部错误与警告（21 项）
+  - `lib/shopify.ts` 去除硬编码 token，改为仅使用环境变量
+  - Shopify API 层补充完整 TypeScript 类型，移除 `any`
+- ✅ **构建稳定性**
+  - 移除 `next/font/google` 远程字体依赖，避免构建时外网拉取失败
+  - 修复 `metadataBase` 警告
+- ✅ **搜索功能升级**
+  - Header 搜索弹窗从本地 mock 数据改为 Shopify 实时搜索
+  - 增加输入防抖与加载状态
 
 ### 2026-03-05
 - ✅ **Shopify 后台欧美市场配置完成**
@@ -331,10 +342,9 @@ npm start
 ### 🟡 中优先级
 - [ ] 政策页面 - Privacy Policy、Terms、Refund Policy
 - [ ] SEO 元数据 - 各页面独立 title/description
-- [ ] 搜索功能 - 接入 Shopify API
+- [x] 搜索功能 - 接入 Shopify API（2026-03-06 已完成）
 
 ### 🟢 低优先级
 - [ ] PWA 支持
 - [ ] 国际化 - 多语言支持
 - [ ] 骨架屏加载
-

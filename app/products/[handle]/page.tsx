@@ -4,37 +4,15 @@ import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { getProduct, formatPrice } from '@/lib/shopify';
+import { getProduct, formatPrice, type ShopifyProduct } from '@/lib/shopify';
 import { useCart } from '@/lib/CartContext';
-
-type Product = {
-  id: string;
-  title: string;
-  handle: string;
-  description?: string;
-  descriptionHtml?: string;
-  featuredImage?: { url: string; altText?: string };
-  images?: { edges: { node: { url: string; altText?: string } }[] };
-  variants?: { 
-    edges: { 
-      node: { 
-        id: string; 
-        title: string; 
-        availableForSale: boolean; 
-        price: { amount: number; currencyCode: string }; 
-        selectedOptions: { name: string; value: string }[] 
-      } 
-    }[] 
-  };
-  options?: { id: string; name: string; values: string[] }[];
-};
 
 export default function ProductPage() {
   const params = useParams();
   const handle = params.handle as string;
   const { addToCart } = useCart();
   
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<ShopifyProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
@@ -55,8 +33,11 @@ export default function ProductPage() {
     fetchProduct();
   }, [handle]);
 
-  const images = product?.images?.edges?.map((e) => e.node) || (product?.featuredImage ? [product.featuredImage] : []);
-  const variants = product?.variants?.edges?.map((e) => e.node) || [];
+  const images = useMemo(
+    () => product?.images?.edges?.map((e) => e.node) || (product?.featuredImage ? [product.featuredImage] : []),
+    [product]
+  );
+  const variants = useMemo(() => product?.variants?.edges?.map((e) => e.node) || [], [product]);
   const defaultPrice = variants[0]?.price;
 
   // 根据选择的选项找到对应的 variant
@@ -68,6 +49,7 @@ export default function ProductPage() {
       v.selectedOptions.every((opt) => selectedOptions[opt.name] === opt.value)
     ) || variants[0];
   }, [selectedOptions, variants]);
+  const displayPrice = selectedVariant?.price || defaultPrice;
 
   const handleOptionChange = (optionName: string, value: string) => {
     setSelectedOptions(prev => ({ ...prev, [optionName]: value }));
@@ -170,7 +152,7 @@ export default function ProductPage() {
         <div className="md:pt-8">
           <h1 className="text-3xl font-light text-neutral-900">{product.title}</h1>
           <p className="mt-4 text-xl text-neutral-900">
-            {formatPrice(selectedVariant?.price?.amount || defaultPrice?.amount, selectedVariant?.price?.currencyCode || defaultPrice?.currencyCode)}
+            {displayPrice ? formatPrice(displayPrice.amount, displayPrice.currencyCode) : 'Price unavailable'}
           </p>
           
           <div className="mt-6 text-neutral-600 leading-relaxed">

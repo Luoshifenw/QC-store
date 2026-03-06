@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState, ReactNode } from 'react';
 import { 
   CartItem, 
   getCart as fetchCart, 
@@ -25,44 +25,28 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [total, setTotal] = useState(0);
-  const [count, setCount] = useState(0);
-
-  // 初始化购物车
-  useEffect(() => {
-    const savedCart = fetchCart();
-    setCart(savedCart);
-    setTotal(getCartTotal(savedCart));
-    setCount(getCartCount(savedCart));
-  }, []);
+  const [cart, setCart] = useState<CartItem[]>(() => fetchCart());
+  const total = useMemo(() => getCartTotal(cart), [cart]);
+  const count = useMemo(() => getCartCount(cart), [cart]);
 
   const handleAddToCart = (item: Omit<CartItem, 'quantity'>) => {
     const newCart = addItem(item);
     setCart(newCart);
-    setTotal(getCartTotal(newCart));
-    setCount(getCartCount(newCart));
   };
 
   const handleUpdateQuantity = (variantId: string, quantity: number) => {
     const newCart = updateQuantity(variantId, quantity);
     setCart(newCart);
-    setTotal(getCartTotal(newCart));
-    setCount(getCartCount(newCart));
   };
 
   const handleRemoveItem = (variantId: string) => {
     const newCart = removeFromCart(variantId);
     setCart(newCart);
-    setTotal(getCartTotal(newCart));
-    setCount(getCartCount(newCart));
   };
 
   const handleClearCart = () => {
     clearCart();
     setCart([]);
-    setTotal(0);
-    setCount(0);
   };
 
   return (

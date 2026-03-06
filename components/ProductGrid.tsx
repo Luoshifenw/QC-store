@@ -1,7 +1,7 @@
-import { ProductCard } from './ProductCard';
+import { ProductCard, type ProductCardProduct } from './ProductCard';
 
 interface ProductGridProps {
-  products: any[];
+  products: ProductCardProduct[];
   title?: string;
   subtitle?: string;
 }

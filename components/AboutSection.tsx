@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function AboutSection() {
   return (
@@ -7,10 +8,11 @@ export function AboutSection() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Image */}
           <div className="relative aspect-square overflow-hidden">
-            <img
+            <Image
               src="/images/about_fabric.png"
               alt="About LIVRA"
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
           </div>
           

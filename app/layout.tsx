@@ -1,22 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CartProvider } from '@/lib/CartContext';
 import { LoadingBar } from '@/components/Loading';
 
-const inter = Inter({ 
-  subsets: ['latin'],
-  variable: '--font-inter',
-});
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
-});
-
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://wearlivra.com'),
   title: 'LIVRA | Elegant Lingerie',
   description: 'Premium lingerie for the modern woman. Comfort meets sophistication.',
   icons: {
@@ -36,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className={`${inter.className} pt-16`}>
+    <html lang="en">
+      <body className="pt-16">
         <CartProvider>
           <LoadingBar />
           <Header />

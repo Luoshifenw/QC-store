@@ -3,19 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { formatPrice } from '@/lib/shopify';
-
-// 搜索产品数据
-const searchProducts = [
-  { id: '1', title: 'Silk Lace Bralette', handle: 'silk-lace-bralette', featuredImage: { url: 'https://images.unsplash.com/photo-1617331721458-bd3bd3f9c7f8?w=600&q=80' }, variants: { edges: [{ node: { price: { amount: 68, currencyCode: 'USD' } } }] } },
-  { id: '2', title: 'Cotton Comfort Bra', handle: 'cotton-comfort-bra', featuredImage: { url: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&q=80' }, variants: { edges: [{ node: { price: { amount: 52, currencyCode: 'USD' } } }] } },
-  { id: '3', title: 'Lace Brief Set', handle: 'lace-brief-set', featuredImage: { url: 'https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=600&q=80' }, variants: { edges: [{ node: { price: { amount: 89, currencyCode: 'USD' } } }] } },
-  { id: '4', title: 'Wireless T-Shirt Bra', handle: 'wireless-tshirt-bra', featuredImage: { url: 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?w=600&q=80' }, variants: { edges: [{ node: { price: { amount: 58, currencyCode: 'USD' } } }] } },
-  { id: '5', title: 'Seamless Thong', handle: 'seamless-thong', featuredImage: { url: 'https://images.unsplash.com/photo-1617331721458-bd3bd3f9c7f8?w=600&q=80' }, variants: { edges: [{ node: { price: { amount: 28, currencyCode: 'USD' } } }] } },
-  { id: '6', title: 'Push-Up Plunge Bra', handle: 'pushup-plunge-bra', featuredImage: { url: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&q=80' }, variants: { edges: [{ node: { price: { amount: 72, currencyCode: 'USD' } } }] } },
-  { id: '7', title: 'Bridal Lace Set', handle: 'bridal-lace-set', featuredImage: { url: 'https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=600&q=80' }, variants: { edges: [{ node: { price: { amount: 128, currencyCode: 'USD' } } }] } },
-  { id: '8', title: 'Sports Bra - Light Support', handle: 'sports-bra-light', featuredImage: { url: 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?w=600&q=80' }, variants: { edges: [{ node: { price: { amount: 45, currencyCode: 'USD' } } }] } },
-];
+import { formatPrice, searchProducts, type ShopifyProduct } from '@/lib/shopify';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -24,6 +12,8 @@ interface SearchModalProps {
 
 export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [query, setQuery] = useState('');
+  const [results, setResults] = useState<ShopifyProduct[]>([]);
+  const [searching, setSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 打开时自动聚焦
@@ -48,12 +38,39 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     };
   }, [isOpen, onClose]);
 
-  // 搜索过滤
-  const results = query.trim() 
-    ? searchProducts.filter(p => 
-        p.title.toLowerCase().includes(query.toLowerCase())
-      )
-    : [];
+  // 连接 Shopify 搜索，输入停止 250ms 后发起请求
+  useEffect(() => {
+    const keyword = query.trim();
+    if (!isOpen || !keyword) {
+      setResults([]);
+      setSearching(false);
+      return;
+    }
+
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const products = await searchProducts(keyword, 8);
+        if (!cancelled) {
+          setResults(products);
+        }
+      } catch {
+        if (!cancelled) {
+          setResults([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setSearching(false);
+        }
+      }
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [query, isOpen]);
 
   if (!isOpen) return null;
 
@@ -87,9 +104,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           {/* 搜索结果 */}
           {query.trim() && (
             <div className="mt-6 border-t border-neutral-200 pt-6">
-              {results.length > 0 ? (
+              {searching ? (
+                <p className="text-neutral-500 text-center py-8">Searching...</p>
+              ) : results.length > 0 ? (
                 <>
-                  <p className="text-sm text-neutral-500 mb-4">{results.length} results for "{query}"</p>
+                  <p className="text-sm text-neutral-500 mb-4">{results.length} results for &quot;{query}&quot;</p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {results.map((product) => (
                       <Link
@@ -107,15 +126,17 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           />
                         </div>
                         <h3 className="mt-2 text-sm font-medium text-neutral-900 line-clamp-1">{product.title}</h3>
-                        <p className="text-sm text-neutral-500">
-                          {formatPrice(product.variants.edges[0].node.price.amount)}
-                        </p>
+                        {product.variants?.edges?.[0]?.node?.price && (
+                          <p className="text-sm text-neutral-500">
+                            {formatPrice(product.variants.edges[0].node.price.amount, product.variants.edges[0].node.price.currencyCode)}
+                          </p>
+                        )}
                       </Link>
                     ))}
                   </div>
                 </>
               ) : (
-                <p className="text-neutral-500 text-center py-8">No results for "{query}"</p>
+                <p className="text-neutral-500 text-center py-8">No results for &quot;{query}&quot;</p>
               )}
             </div>
           )}

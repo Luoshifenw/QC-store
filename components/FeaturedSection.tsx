@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function FeaturedSection() {
   return (
@@ -7,10 +8,11 @@ export function FeaturedSection() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Left Image - Women */}
           <Link href="/collection/women" className="group relative aspect-[4/5] overflow-hidden">
-            <img
+            <Image
               src="/images/category_women.png"
               alt="Women Collection"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition" />
             <div className="absolute bottom-8 left-8">
@@ -21,10 +23,11 @@ export function FeaturedSection() {
           
           {/* Right Image - Men */}
           <Link href="/collection/men" className="group relative aspect-[4/5] overflow-hidden">
-            <img
+            <Image
               src="/images/category_men.png"
               alt="Men Collection"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition" />
             <div className="absolute bottom-8 left-8">
