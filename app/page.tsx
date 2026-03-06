@@ -2,13 +2,18 @@ import { Hero } from '@/components/Hero';
 import { FeaturedSection } from '@/components/FeaturedSection';
 import { AboutSection } from '@/components/AboutSection';
 import { ProductGrid } from '@/components/ProductGrid';
-import { getProducts } from '@/lib/shopify';
+import { getProducts, type ShopifyProduct } from '@/lib/shopify';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  // 从 Shopify API 获取真实商品
-  const products = await getProducts(8);
+  // 即使 Shopify 运行时配置异常，也要保证首页可访问
+  let products: ShopifyProduct[] = [];
+  try {
+    products = await getProducts(8);
+  } catch (error) {
+    console.error('Failed to load homepage products:', error);
+  }
   
   return (
     <>

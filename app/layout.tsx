@@ -5,8 +5,27 @@ import { Footer } from '@/components/Footer';
 import { CartProvider } from '@/lib/CartContext';
 import { LoadingBar } from '@/components/Loading';
 
+function resolveMetadataBase(): URL {
+  const fallback = 'https://wearlivra.com';
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (!raw) {
+    return new URL(fallback);
+  }
+
+  try {
+    return new URL(raw);
+  } catch {
+    try {
+      return new URL(`https://${raw}`);
+    } catch {
+      return new URL(fallback);
+    }
+  }
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://wearlivra.com'),
+  metadataBase: resolveMetadataBase(),
   title: 'LIVRA | Elegant Lingerie',
   description: 'Premium lingerie for the modern woman. Comfort meets sophistication.',
   icons: {
