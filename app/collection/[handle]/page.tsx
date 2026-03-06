@@ -4,30 +4,48 @@ import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { getCollection, formatPrice, getProducts } from '@/lib/shopify';
+import { getCollection, formatPrice, getProducts, type ShopifyProduct } from '@/lib/shopify';
 
-type Product = {
-  id: string;
-  title: string;
-  handle: string;
-  description?: string;
-  featuredImage?: { url: string; altText?: string };
-  variants?: { edges: { node: { id: string; price: { amount: number; currencyCode: string } } }[] };
-};
+type Product = ShopifyProduct;
 
 type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'newest';
 
-const collectionInfo: Record<string, { title: string; description: string }> = {
-  'women': { title: 'Women', description: 'Elegant lingerie crafted for her' },
-  'men': { title: 'Men', description: 'Comfortable essentials for him' },
-  'featured': { title: 'Featured', description: 'Our curated picks' },
-  'all': { title: 'All Products', description: 'Discover our complete collection' },
+type CollectionMeta = {
+  title: string;
+  description: string;
+  shopifyHandles?: string[];
+};
+
+const collectionInfo: Record<string, CollectionMeta> = {
+  women: {
+    title: 'Women',
+    description: 'Elegant lingerie crafted for her',
+    shopifyHandles: ['women', 'women-collection'],
+  },
+  men: {
+    title: 'Men',
+    description: 'Comfortable essentials for him',
+    shopifyHandles: ['men', 'men-collection'],
+  },
+  featured: {
+    title: 'Featured',
+    description: 'Our curated picks',
+    shopifyHandles: ['featured', 'featured-collection'],
+  },
+  all: {
+    title: 'All Products',
+    description: 'Discover our complete collection',
+  },
 };
 
 export default function CollectionPage() {
   const params = useParams<{ handle: string }>();
   const handle = params?.handle || 'all';
-  const collectionMeta = collectionInfo[handle] || collectionInfo['all'];
+  const collectionMeta = collectionInfo[handle] || {
+    title: decodeURIComponent(handle),
+    description: 'Browse this collection',
+    shopifyHandles: [handle],
+  };
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,12 +58,22 @@ export default function CollectionPage() {
           const allProducts = await getProducts(50);
           setProducts(allProducts);
         } else {
-          const collection = await getCollection(handle, 50);
-          if (collection) {
-            setProducts(collection.products);
-          } else {
-            setProducts([]);
+          const mappedMeta = collectionInfo[handle];
+          const candidates = mappedMeta?.shopifyHandles?.length
+            ? mappedMeta.shopifyHandles
+            : [handle];
+
+          let foundProducts: Product[] = [];
+
+          for (const candidate of candidates) {
+            const collection = await getCollection(candidate, 50);
+            if (collection) {
+              foundProducts = collection.products;
+              break;
+            }
           }
+
+          setProducts(foundProducts);
         }
       } catch (error) {
         console.error('Failed to fetch products:', error);
