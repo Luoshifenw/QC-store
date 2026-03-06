@@ -158,6 +158,7 @@ async function shopifyFetch<TData>(query: string, variables: ShopifyVariables = 
   const { storeDomain, storefrontApiToken } = getStoreConfig();
   const response = await fetch(`https://${storeDomain}/api/${API_VERSION}/graphql.json`, {
     method: 'POST',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       'X-Shopify-Storefront-Access-Token': storefrontApiToken,

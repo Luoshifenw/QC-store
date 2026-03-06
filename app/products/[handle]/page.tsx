@@ -122,7 +122,7 @@ export default function ProductPage() {
               src={images[selectedImageIndex]?.url || '/placeholder.jpg'}
               alt={images[selectedImageIndex]?.altText || product.title}
               fill
-              className="object-cover"
+              className="object-contain p-4"
               priority
             />
           </div>
@@ -140,7 +140,7 @@ export default function ProductPage() {
                     src={img.url}
                     alt={img.altText || `${product.title} ${idx + 1}`}
                     fill
-                    className="object-cover"
+                    className="object-contain p-1"
                   />
                 </button>
               ))}

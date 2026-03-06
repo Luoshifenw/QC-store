@@ -4,6 +4,8 @@ import { AboutSection } from '@/components/AboutSection';
 import { ProductGrid } from '@/components/ProductGrid';
 import { getProducts } from '@/lib/shopify';
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   // 从 Shopify API 获取真实商品
   const products = await getProducts(8);

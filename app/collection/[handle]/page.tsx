@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { getCollection, formatPrice, getProducts } from '@/lib/shopify';
 
 type Product = {
@@ -23,8 +24,10 @@ const collectionInfo: Record<string, { title: string; description: string }> = {
   'all': { title: 'All Products', description: 'Discover our complete collection' },
 };
 
-export default function CollectionPage({ params }: { params: { handle: string } }) {
-  const collectionMeta = collectionInfo[params.handle] || collectionInfo['all'];
+export default function CollectionPage() {
+  const params = useParams<{ handle: string }>();
+  const handle = params?.handle || 'all';
+  const collectionMeta = collectionInfo[handle] || collectionInfo['all'];
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,11 +36,11 @@ export default function CollectionPage({ params }: { params: { handle: string } 
     async function fetchProducts() {
       setLoading(true);
       try {
-        if (params.handle === 'all') {
+        if (handle === 'all') {
           const allProducts = await getProducts(50);
           setProducts(allProducts);
         } else {
-          const collection = await getCollection(params.handle, 50);
+          const collection = await getCollection(handle, 50);
           if (collection) {
             setProducts(collection.products);
           } else {
@@ -51,7 +54,7 @@ export default function CollectionPage({ params }: { params: { handle: string } 
       setLoading(false);
     }
     fetchProducts();
-  }, [params.handle]);
+  }, [handle]);
 
   // 排序逻辑
   const sortedProducts = useMemo(() => {
@@ -120,7 +123,7 @@ export default function CollectionPage({ params }: { params: { handle: string } 
                   src={product.featuredImage?.url || '/placeholder.jpg'}
                   alt={product.featuredImage?.altText || product.title}
                   fill
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                  className="object-contain object-center p-2 transition-transform duration-500"
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
                 />
               </div>

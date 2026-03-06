@@ -25,7 +25,7 @@ export function ProductCard({ product }: ProductCardProps) {
             src={product.featuredImage.url}
             alt={product.featuredImage.altText || product.title}
             fill
-            className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+            className="object-contain object-center p-2 transition-transform duration-500"
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
           />
         ) : (
